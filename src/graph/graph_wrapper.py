@@ -1,9 +1,9 @@
-from typing import List, Type, Tuple, Literal, cast
+import uuid
+from typing import List, Type, Tuple, cast
 from langchain_core.tools import BaseTool
-from starlette.routing import Router
 
 from models.model_wrapper import ModelWrapper
-from nodes import BaseNodeWrapper, NodeWrapper
+from graph.nodes_wrappers import BaseNodeWrapper, NodeWrapper
 from langgraph.typing import StateT
 from langgraph.graph import StateGraph
 from enum import Enum
@@ -18,16 +18,15 @@ class GraphWrapper:
                  state_type: Type[StateT],
                  models: List[ModelWrapper],
                  nodes: List[BaseNodeWrapper],
-                 edges_info: Tuple[str, EdgeType, List[str]],
-                 routers: List[Router],
-                 tools: List[BaseTool] = None):
+                 edges_info: List[Tuple[str, EdgeType, List[str]]]
+                 ):
         self.models = models
-        self.tools = tools
         self.nodes = nodes
         self.edges_info = edges_info
         self.state_type = state_type
         self.graph = None
         self.memory = MemorySaver()
+        self.sidekick_id = str(uuid.uuid4())
 
     def _get_router(self, node_name: str):
         for node in self.nodes:
@@ -53,3 +52,8 @@ class GraphWrapper:
 
         # Compile the graph
         self.graph = graph_builder.compile(checkpointer=self.memory)
+
+    async def run_superstep(self, initial_state: StateT) -> StateT:
+        config = {"configurable": {"thread_id": self.sidekick_id}}
+        result = await self.graph.ainvoke(initial_state, config=config)
+        return result

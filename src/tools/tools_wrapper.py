@@ -1,10 +1,14 @@
+from abc import ABC, abstractmethod
 
 class ToolsWrapper:
-    def __init__(self):
+    def __init__(self, name: str):
+        self.name = name
         self.tools = []
 
-    def setup(self):
+    async def setup(self):
+        """Optional async setup hook (override if needed)."""
         pass
 
-    def cleanup(self):
+    async def cleanup(self):
+        """Optional async teardown hook (override if needed)."""
         pass

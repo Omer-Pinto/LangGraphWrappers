@@ -1,4 +1,4 @@
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Type
 from models.models import Model
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
@@ -10,7 +10,7 @@ class ModelWrapper:
                  name: str,
                  method: Literal["function_calling", "json_mode", "json_schema"] = "json_schema",
                  tools: Optional[List[BaseTool]]=None,
-                 schema: Optional[BaseModel] = None,):
+                 schema: Optional[Type[BaseModel]] = None,):
         self.name = name
         temp = ChatOpenAI(model=model)
         if tools:

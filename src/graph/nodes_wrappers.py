@@ -1,7 +1,7 @@
-from typing import Callable, Any, Dict, List, Optional
+from typing import Callable, Any, Dict, List, Optional, Awaitable
 from langchain_core.tools.base import BaseTool
 from langgraph.prebuilt import ToolNode
-
+from langgraph.typing import StateT
 from models.model_wrapper import ModelWrapper
 
 
@@ -12,11 +12,16 @@ class BaseNodeWrapper:
         pass
 
 class NodeWrapper(BaseNodeWrapper):
-    def __init__(self, name: str, action: Callable[[Any], Dict[str, Any]], model_wrapper: ModelWrapper, router: Optional[Callable[[Any], Any]]= None):
+    def __init__(self, name: str,
+                 action: Callable[[StateT], Awaitable[Dict[str, Any]]],
+                 model_wrapper: ModelWrapper,
+                 router: Optional[Callable[[Any], Any]]= None):
         super().__init__(name)
         self.action = action
         self.model_wrapper = model_wrapper
         self.router = router
+        # inject model into node action
+        self.action.__model__ = model_wrapper.model
 
     def get_node_metadata(self) -> Dict[str, Any]:
         return {"node": self.name, "action": self.action}

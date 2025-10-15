@@ -1,22 +1,24 @@
 import os
-
-from tools_wrapper import ToolsWrapper
+from tools.tools_wrapper import ToolsWrapper
 from langchain_mcp_adapters.client import MultiServerMCPClient
-
+from pathlib import Path
 
 class YahooFinanceMCPTools(ToolsWrapper):
     def __init__(self):
-        super().__init__()
+        super().__init__("yahoo_finance_mcp")
         self.client = None
 
     async def setup(self):
+        # Get the directory where THIS file lives
+        THIS_DIR = Path(__file__).parent
+
         self.client = MultiServerMCPClient(
             {
                 "yahoo_finance": {
                     "command": "uv",
                     "args": ["run", "--active", "./server.py"],
                     "transport": "stdio",
-                    "cwd": "./mcps/yahoo_finance_mcp",
+                    "cwd": f"{THIS_DIR}/mcps/yahoo_finance_mcp",
                     "env": {"UV_PYTHON": "3.12", **os.environ},
                 }
             }
