@@ -1,12 +1,16 @@
 [project]
 name = "langgraph-infra"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
     "langchain-community>=0.3.31",
     "langchain-mcp-adapters>=0.1.11",
     "langchain-openai>=0.3.35",
     "langgraph>=0.6.10",
     "mcp>=1.16.0",
+    # 👇 add these, used by yahoo_finance_mcp
+    "pandas",
+    "yfinance",
+    "requests",
 ]
 
 [build-system]
