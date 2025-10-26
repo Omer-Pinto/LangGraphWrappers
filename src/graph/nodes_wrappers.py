@@ -26,6 +26,15 @@ class NodeWrapper(BaseNodeWrapper):
     def get_node_metadata(self) -> Dict[str, Any]:
         return {"node": self.name, "action": self.action}
 
+class PythonNodeWrapper(BaseNodeWrapper):
+    def __init__(self, name: str,
+                 action: Callable[[StateT], Awaitable[Dict[str, Any]]]):
+        super().__init__(name)
+        self.action = action
+
+    def get_node_metadata(self) -> Dict[str, Any]:
+        return {"node": self.name, "action": self.action}
+
 class ToolNodeWrapper(BaseNodeWrapper):
     def __init__(self, name: str, tools: List[BaseTool]):
         super().__init__(name)
