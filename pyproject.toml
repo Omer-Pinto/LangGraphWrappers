@@ -6,6 +6,10 @@ dependencies = [
     "langchain-mcp-adapters>=0.1.11",
     "langchain-openai>=0.3.35",
     "langgraph>=0.6.10",
+    "langchain-anthropic>=0.3.10",
+    "langchain-community>=0.3.20",
+    "langchain-experimental>=0.3.4",
+    "langchain-mcp-adapters>=0.1.11",
     "mcp>=1.16.0",
     # 👇 add these, used by yahoo_finance_mcp
     "pandas",
