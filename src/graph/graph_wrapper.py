@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 from typing import List, Type, Tuple, cast
 from langchain_core.tools import BaseTool
 
@@ -36,6 +37,12 @@ class GraphWrapper:
                 return cast(NodeWrapper, node).router
         raise Exception(f"Node {node_name} not found")
 
+
+    def get_graph_drawing(self):
+        mermaid = self.graph.get_graph().draw_mermaid()
+        mermaid = mermaid.replace("&nbsp;", " ").replace("<p>", "").replace("</p>", "")
+        Path("graph.mmd").write_text(mermaid, encoding="utf-8")
+        print("Saved to graph.mmd — open it in mermaid.live to verify synt.")
 
     def build_and_compile_graph(self):
         graph_builder = StateGraph(self.state_type)
